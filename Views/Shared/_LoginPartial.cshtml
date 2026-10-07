@@ -5,13 +5,17 @@
 {
         <span class="navbar-text text-dark">Hello @User.Identity?.Name!</span>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Index", "Films", new { area = "" })" method="post">
+                <button type="submit" class="nav-link btn btn-link text-dark fw-bold">Déconnexion</button>
+            </form>
         </li>
 }
 else
 {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Sign in</a>
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Index", "Films", new { area = "" })" method="post">
+                <button type="submit" class="nav-link btn btn-link text-dark fw-bold">Connexion</button>
+            </form>
         </li>
 }
 </ul>

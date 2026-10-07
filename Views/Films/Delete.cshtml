@@ -1,0 +1,30 @@
+﻿@model Filmothèque.Models.Film
+
+@{
+    ViewData["Title"] = "Confirmer la suppression";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white py-3">
+                    <h4 class="mb-0 fw-bold">⚠️ Confirmation de suppression</h4>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <img src="@Model.ImageUrl" alt="@Model.Title" class="img-thumbnail mb-3" style="max-height: 200px; object-fit: cover;" />
+                    <h3 class="fw-bold text-dark">@Model.Title</h3>
+                    <p class="text-muted">Êtes-vous sûr de vouloir supprimer définitivement ce film de la base de données ? Cette action est irréversible.</p>
+
+                    <form asp-action="Delete" method="post" class="mt-4">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-flex justify-content-center gap-3">
+                            <a asp-action="Index" class="btn btn-outline-secondary px-4">Annuler</a>
+                            <button type="submit" class="btn btn-danger px-4">Confirmer la suppression</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

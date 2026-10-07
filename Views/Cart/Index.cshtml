@@ -63,9 +63,11 @@ else
                     <strong class="text-success">@(((decimal)ViewBag.Total).ToString("C"))</strong>
                 </div>
                 <!-- Le bouton vers la validation Stripe sera ici à l'Étape 2 -->
-                <a asp-controller="Checkout" asp-action="CreateCheckoutSession" class="btn btn-success btn-lg w-100">
-                    Procéder au paiement
-                </a>
+                <form asp-controller="Checkout" asp-action="CreateCheckoutSession" method="post">
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        Procéder au paiement
+                    </button>
+                </form>
             </div>
         </div>
     </div>

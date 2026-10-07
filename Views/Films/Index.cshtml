@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Filmothèque.Models.Film>
+
+@{
+    ViewData["Title"] = "Filmothèque";
+    var films = Model ?? Enumerable.Empty<Filmothèque.Models.Film>();
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">Catalogue de Films</h1>
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="d-flex gap-2">
+            <form asp-action="ImportTmdb" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-success">Importer depuis TMDB</button>
+            </form>
+            <form asp-action="DeleteAll" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer TOUS les films de la base de données ?');">
+                <button type="submit" class="btn btn-outline-danger">Effacé tout les films</button>
+            </form>
+            <a asp-action="Create" class="btn btn-primary">Ajouter un film</a>
+        </div>
+    }
+</div>
+
+<!-- Barre de recherche et filtrage -->
+<form asp-action="Index" method="get" class="row g-3 mb-4 card p-3 shadow-sm border-0">
+    <div class="col-md-5">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Rechercher un titre..." />
+    </div>
+    <div class="col-md-4">
+        <select name="genre" class="form-select" asp-items="Html.GetEnumSelectList<Filmothèque.Models.GenreFilm>()">
+            <option value="">Tous les genres</option>
+        </select>
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-dark w-100">Filtrer</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Réinitialiser</a>
+    </div>
+</form>
+
+<!-- Grille des films -->
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0">
+                <!-- Affiche l'image chargée ou l'image par défaut si échec -->
+                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title" style="height: 380px; object-fit: cover;"
+                     onerror="this.onerror=null;this.src='https://via.placeholder.com/300x400?text=Pas+d%27image';" />
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title text-truncate me-2 mb-0">@item.Title</h5>
+                        <span class="badge bg-info text-dark">@item.Genre</span>
+                    </div>
+                    <p class="text-muted small mb-2">Sortie : @item.ReleaseDate.ToString("dd/MM/yyyy")</p>
+                    <p class="card-text text-truncate mb-3">@item.Description</p>
+
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="fw-bold text-success fs-5">@item.Price.ToString("C")</span>
+                            <span class="badge bg-warning text-dark">★ @item.Rating / 5</span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">Détails</a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="btn-group w-100">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Éditer</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Supprimer</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

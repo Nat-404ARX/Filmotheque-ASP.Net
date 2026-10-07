@@ -1,0 +1,21 @@
+## Configuration Visual Studio & .NET
+.vs/
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+## Base de données SQLite locale & fichiers de log
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+## Dépendances front-end / Node (si utilisées plus tard)
+node_modules/
+
+## Fichiers de configuration contenant des secrets
+appsettings.Development.json
+appsettings.Production.json

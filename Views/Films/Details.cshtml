@@ -1,0 +1,43 @@
+﻿@model Filmothèque.Models.Film
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container my-4">
+    <div class="card shadow-sm border-0 p-4">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <img src="@Model.ImageUrl" class="img-fluid rounded shadow-sm w-100" alt="@Model.Title"
+                     onerror="this.onerror=null;this.src='https://via.placeholder.com/300x400?text=Pas+d%27image';" />
+            </div>
+            <div class="col-md-8 d-flex flex-column">
+                <h2 class="fw-bold">@Model.Title</h2>
+                <div class="mb-3">
+                    <span class="badge bg-info text-dark me-2">@Model.Genre</span>
+                    <span class="badge bg-warning text-dark">★ @Model.Rating / 5</span>
+                </div>
+                <p class="text-muted">Date de sortie : @Model.ReleaseDate.ToString("dd MMMM yyyy")</p>
+                <hr />
+                <h5>Description</h5>
+                <p class="flex-grow-1">@Model.Description</p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div>
+                        <span class="fs-3 fw-bold text-success">@Model.Price.ToString("C")</span>
+                        <p class="text-muted small mb-0">En stock : @Model.StockQuantity unité(s)</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <!-- Le bouton Ajouter au panier sera branché ici -->
+                        <button class="btn btn-success btn-lg" @(Model.StockQuantity == 0 ? "disabled" : "")>
+                            Ajouter au panier
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">← Retour à la liste</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Filmothèque.Models.Film>
+
+@{
+    ViewData["Title"] = "Gestion des Stocks";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">Gestion du Stock Backoffice</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Retour au catalogue</a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Film</th>
+                    <th>Prix</th>
+                    <th>Stock Actuel</th>
+                    <th>Ajuster le stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var film in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="@film.ImageUrl" style="width: 40px; height: 60px; object-fit: cover;" class="rounded" />
+                                <span class="fw-bold">@film.Title</span>
+                            </div>
+                        </td>
+                        <td>@film.Price.ToString("C")</td>
+                        <td>
+                            <span class="badge @(film.StockQuantity == 0 ? "bg-danger" : film.StockQuantity < 5 ? "bg-warning text-dark" : "bg-success")">
+                                @film.StockQuantity en stock
+                            </span>
+                        </td>
+                        <td>
+                            <form asp-action="UpdateStock" method="post" class="d-flex gap-2" style="max-width: 200px;">
+                                <input type="hidden" name="id" value="@film.Id" />
+                                <input type="number" name="stockQuantity" value="@film.StockQuantity" min="0" class="form-control form-control-sm" />
+                                <button type="submit" class="btn btn-primary btn-sm">Mettre à jour</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

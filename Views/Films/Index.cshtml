@@ -76,6 +76,12 @@
 
                         <div class="d-grid gap-2">
                             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm">Détails</a>
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mt-2">
+                                <input type="hidden" name="filmId" value="@item.Id" />
+                                <button type="submit" class="btn btn-primary btn-sm w-100" @(item.StockQuantity == 0 ? "disabled" : "")>
+                                    @(item.StockQuantity > 0 ? "Ajouter au panier" : "Rupture de stock")
+                                </button>
+                            </form>
                             @if (User.IsInRole("Admin"))
                             {
                                 <div class="btn-group w-100">

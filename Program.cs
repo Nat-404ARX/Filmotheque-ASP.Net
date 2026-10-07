@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Filmothèque.Data;
 using Filmothèque.Services;
-using Filmothèque.Services;
+using Stripe;
+
+DotNetEnv.Env.Load();
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("La chaîne de connexion 'DefaultConnection' n'a pas été trouvée.");
+
+var stripeSecretKey = Environment.GetEnvironmentVariable("KeyStripe")
+                      ?? builder.Configuration["Stripe:SecretKey"];
+
+Stripe.StripeConfiguration.ApiKey = stripeSecretKey;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
@@ -31,6 +38,16 @@ builder.Services.AddHttpClient<ITmdbService, TmdbService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+
 var app = builder.Build();
 
 
@@ -44,6 +61,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 
 app.UseAuthentication();

@@ -6,10 +6,10 @@ namespace Filmothèque.Data
     {
         public static async Task SeedAsync(IServiceProvider serviceProvider)
         {
+
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            // 1. Création des rôles s'ils n'existent pas
             string[] roleNames = { "Admin", "User" };
             foreach (var roleName in roleNames)
             {
@@ -20,7 +20,6 @@ namespace Filmothèque.Data
                 }
             }
 
-            // 2. Création de l'utilisateur Administrateur par défaut
             var adminEmail = "admin@filmotheque.com";
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
@@ -33,12 +32,30 @@ namespace Filmothèque.Data
                     EmailConfirmed = true
                 };
 
-                // Attention : Le mot de passe doit respecter la politique de sécurité d'Identity (Min 6 car., majuscule, chiffre)
                 var result = await userManager.CreateAsync(newAdmin, "PassdetesT1!");
 
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(newAdmin, "Admin");
+                }
+            }
+
+            var userEmail = "user@filmotheque.com";
+            var normalUser = await userManager.FindByEmailAsync(userEmail);
+
+            if (normalUser == null)
+            {
+                var newUser = new IdentityUser
+                {
+                    UserName = userEmail,
+                    Email = userEmail,
+                    EmailConfirmed = true
+                };
+
+                var result = await userManager.CreateAsync(newUser, "PassdetesT2!");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newUser, "User");
                 }
             }
         }

@@ -137,5 +137,29 @@ namespace Filmothèque.Controllers
             TempData["SuccessMessage"] = "Tous les films ont été supprimés de la base de données.";
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Films/ManageStock (Admin uniquement)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ManageStock()
+        {
+            var films = await _filmService.GetAllFilmsAsync(null, null);
+            return View(films);
+        }
+
+        // POST: Films/UpdateStock (Admin uniquement)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateStock(int id, int stockQuantity)
+        {
+            var film = await _filmService.GetFilmByIdAsync(id);
+            if (film != null)
+            {
+                film.StockQuantity = Math.Max(0, stockQuantity);
+                await _filmService.UpdateFilmAsync(film);
+                TempData["SuccessMessage"] = $"Le stock de « {film.Title} » a été mis à jour ({film.StockQuantity} unité(s)).";
+            }
+            return RedirectToAction(nameof(ManageStock));
+        }
     }
 }
